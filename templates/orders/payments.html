@@ -63,8 +63,7 @@
                                                 <p class="text-muted small">
                                                     {% if cart_item.variations.all %}
                                                     {% for item in cart_item.variations.all %}
-                                                    {{item.variation_category | capfirst }} : {{item.variation_value |
-                                                    capfirst}} <br>
+                                                    {{item.variation_category | capfirst }} : {{item.variation_value | capfirst}} <br>
                                                     {% endfor %}
                                                     {% endif %}
                                                 </p>
@@ -152,6 +151,7 @@
     var csrftoken = getCookie('csrftoken');
     var orderId = '{{order.order_number}}'
     var payment_method = 'PayPal'
+    var redirect_url = "{% url 'order_complete' %}"
 
     paypal.Buttons({
 
@@ -184,8 +184,10 @@
                             status: details.status,
                         }),
                     })
-                        // .then(response => response.json())
-                        // .then(data => console.log(data))
+                        .then(response => response.json())
+                        .then(data => {
+                            window.location.href = redirect_url + '?order_number='+ data.order_number + '&payment_id='+ data.transId
+                        })
                 }
 
 
